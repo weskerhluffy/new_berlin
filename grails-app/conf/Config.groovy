@@ -11,6 +11,8 @@
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
+import grails.plugin.springsecurity.SecurityConfigType
+
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
 // The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
@@ -119,16 +121,78 @@ log4j.main = {
 	//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
 	//}
 
-	debug 'org.codehaus.groovy.grails.web.servlet',        // controllers
+	warn 'org.codehaus.groovy.grails.web.servlet',        // controllers
 			'org.codehaus.groovy.grails.web.pages',          // GSP
 			'org.codehaus.groovy.grails.web.sitemesh',       // layouts
 			'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
 			'org.codehaus.groovy.grails.web.mapping',        // URL mapping
 			'org.codehaus.groovy.grails.commons',            // core / classloading
-			'org.codehaus.groovy.grails.plugins',            // plugins
-			'org.springframework'
+			'org.codehaus.groovy.grails.plugin'            // plugins
+	debug	'org.springframework*',
+			"org.springframework.beans.factory.support.DefaultListableBeanFactory"
 
-	debug  'org.hibernate',
+	warn 'org.hibernate',
 			'net.sf.ehcache.hibernate',
 			'org.codehaus.groovy.grails.orm.hibernate'      // hibernate integration
+	debug   'grails.plugin.springsecurity',
+			'org.codehaus.groovy.grails.plugin.springsecurity',
+			'org.springframework.security',
+			'org.jasig.cas.client',
+			'mx.mierda',
+			'validation',
+			'hi.furor'
 }
+
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'hi.furor.vo.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'hi.furor.vo.UserRole'
+grails.plugin.springsecurity.authority.className = 'hi.furor.vo.Role'
+
+grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
+
+grails.plugin.springsecurity.interceptUrlMap = [
+	'/user/**':    [
+		'IS_AUTHENTICATED_REMEMBERED'
+	],
+	'/home/**':    [
+		'IS_AUTHENTICATED_REMEMBERED'
+	],
+	'/new_berlin/**':    [
+		'IS_AUTHENTICATED_REMEMBERED'
+	],
+	'/js/**':        [
+		'IS_AUTHENTICATED_ANONYMOUSLY'
+	],
+	'/css/**':       [
+		'IS_AUTHENTICATED_ANONYMOUSLY'
+	],
+	'/images/**':    [
+		'IS_AUTHENTICATED_ANONYMOUSLY'
+	],
+	'/*':            [
+		'IS_AUTHENTICATED_ANONYMOUSLY'
+	],
+	'/login/**':     [
+		'IS_AUTHENTICATED_ANONYMOUSLY'
+	],
+	'/logout/**':    [
+		'IS_AUTHENTICATED_ANONYMOUSLY']
+]
+
+grails.plugin.springsecurity.logout.afterLogoutUrl = 'https://localhost:8443/cas/logout?url=http://localhost:8084/new_berlin/'
+grails.plugin.springsecurity.cas.userAttribsFromCas = true
+grails.plugin.springsecurity.cas.authorityAttribNamesFromCas = ['authorities']
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'hi.furor.vo.User'
+
+grails.plugin.springsecurity.cas.active = true
+grails.plugin.springsecurity.cas.serverUrlPrefix = 'https://localhost:8443/cas'
+grails.plugin.springsecurity.cas.serverUrlEncoding="UTF-8"
+grails.plugin.springsecurity.cas.loginUri = '/login'
+grails.plugin.springsecurity.cas.sendRenew=false
+grails.plugin.springsecurity.cas.serviceUrl = 'http://localhost:8084/new_berlin/j_spring_cas_security_check'
+grails.plugin.springsecurity.cas.key="grails-spring-security-cas"
+grails.plugin.springsecurity.cas.artifactParameter="ticket"
+grails.plugin.springsecurity.cas.serviceParameter="service"
+grails.plugin.springsecurity.cas.filterProcessesUrl="/j_spring_cas_security_check"
+grails.plugin.springsecurity.cas.proxyCallbackUrl = 'http://localhost:8084/new_berlin/secure/receptor'
+grails.plugin.springsecurity.cas.proxyReceptorUrl = '/secure/receptor'
+grails.plugin.springsecurity.cas.useSingleSignout=false
