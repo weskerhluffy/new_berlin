@@ -150,6 +150,9 @@ grails.plugin.springsecurity.authority.className = 'hi.furor.vo.Role'
 grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
 
 grails.plugin.springsecurity.interceptUrlMap = [
+	'/cacas/**':    [
+		'IS_AUTHENTICATED_REMEMBERED'
+	],
 	'/user/**':    [
 		'IS_AUTHENTICATED_REMEMBERED'
 	],

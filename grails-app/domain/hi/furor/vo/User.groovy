@@ -1,5 +1,8 @@
 package hi.furor.vo
 
+import grails.rest.*
+
+@Resource(uri='/cacas')
 class User {
 
 
